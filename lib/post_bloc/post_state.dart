@@ -2,18 +2,9 @@ part of 'post_bloc.dart';
 
 enum PostStatus {
   initial,
-
-  addingPost,
-  addedPostWithSuccess,
-  errorAddingPost,
-
-  updatingPost,
-  updatedPostWithSuccess,
-  errorUpdatingPost,
-
-  removingPost,
-  removedPostWithSuccess,
-  errorRemovingPost,
+  loading,
+  success,
+  error,
 }
 
 class PostState {
