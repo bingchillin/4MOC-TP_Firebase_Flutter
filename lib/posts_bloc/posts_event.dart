@@ -1,4 +1,4 @@
-part of 'post_bloc.dart';
+part of 'posts_bloc.dart';
 
 @immutable
 abstract class PostsEvent {}

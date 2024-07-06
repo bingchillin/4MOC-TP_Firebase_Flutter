@@ -4,26 +4,26 @@ import 'package:tp_firebase_flutter/models/post.dart';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 
-part 'post_event.dart';
-part 'post_state.dart';
+part 'posts_event.dart';
+part 'posts_state.dart';
 
-class PostBloc extends Bloc<PostsEvent, PostState> {
-  PostBloc() : super(const PostState()) {
+class PostsBloc extends Bloc<PostsEvent, PostsState> {
+  PostsBloc() : super(const PostsState()) {
     on<GetAllPosts>(_onGetAllPosts);
   }
 
-  void _onGetAllPosts(GetAllPosts event, Emitter<PostState> emit) async {
-    emit(state.copyWith(status: PostStatus.loading));
+  void _onGetAllPosts(GetAllPosts event, Emitter<PostsState> emit) async {
+    emit(state.copyWith(status: PostsStatus.loading));
 
     try {
       final posts = await _getAllPosts();
       emit(state.copyWith(
-        status: PostStatus.success,
+        status: PostsStatus.success,
         posts: posts,
       ));
     } catch (error) {
       emit(state.copyWith(
-        status: PostStatus.error,
+        status: PostsStatus.error,
         error: UnknownException(),
       ));
     }

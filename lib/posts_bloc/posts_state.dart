@@ -1,29 +1,29 @@
-part of 'post_bloc.dart';
+part of 'posts_bloc.dart';
 
-enum PostStatus {
+enum PostsStatus {
   initial,
   loading,
   success,
   error,
 }
 
-class PostState {
-  final PostStatus status;
+class PostsState {
+  final PostsStatus status;
   final List<Post> posts;
   final AppException? error;
 
-  const PostState({
-    this.status = PostStatus.initial,
+  const PostsState({
+    this.status = PostsStatus.initial,
     this.posts = const [],
     this.error,
   });
 
-  PostState copyWith({
-    PostStatus? status,
+  PostsState copyWith({
+    PostsStatus? status,
     List<Post>? posts,
     AppException? error,
   }) {
-    return PostState(
+    return PostsState(
       status: status ?? this.status,
       posts: posts ?? this.posts,
       error: error,

@@ -8,7 +8,7 @@ abstract class JspEvent {
 class AddPost extends JspEvent {
   final Post post;
 
-  const AddPost(this.post);
+  const AddPost({required this.post});
 }
 
 class UpdatePost extends JspEvent {
@@ -20,5 +20,5 @@ class UpdatePost extends JspEvent {
 class RemovePost extends JspEvent {
   final Post post;
 
-  const RemovePost(this.post);
+  const RemovePost({required this.post});
 }
