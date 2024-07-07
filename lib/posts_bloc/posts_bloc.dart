@@ -11,6 +11,7 @@ class PostsBloc extends Bloc<PostsEvent, PostsState> {
   PostsBloc() : super(const PostsState()) {
     on<GetAllPosts>(_onGetAllPosts);
     on<AddPost>(_onAddPost);
+    on<RemovePost>(_onRemovePost);
   }
 
   void _onGetAllPosts(GetAllPosts event, Emitter<PostsState> emit) async {

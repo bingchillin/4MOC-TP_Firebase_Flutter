@@ -29,8 +29,8 @@ class _PostsScreenState extends State<PostsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<JspBloc, JspState>(
-      listener: _onJspBlocListener,
+    return BlocListener<PostsBloc, PostsState>(
+      listener: _onPostsBlocListener,
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Posts'),
@@ -80,8 +80,8 @@ class _PostsScreenState extends State<PostsScreen> {
     AddPostScreen.navigateTo(context);
   }
 
-  void _onJspBlocListener(BuildContext context, JspState state) {
-    if (state.status == JspStatus.errorAddingPost) {
+  void _onPostsBlocListener(BuildContext context, PostsState state) {
+    if (state.status == PostsStatus.errorAddingPost) {
       showDialog(
         context: context,
         builder: (context) {

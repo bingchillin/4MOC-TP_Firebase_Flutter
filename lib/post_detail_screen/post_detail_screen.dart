@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tp_firebase_flutter/models/post.dart';
-import 'package:tp_firebase_flutter/jsp_bloc/jsp_bloc.dart';
 import 'package:tp_firebase_flutter/posts_bloc/posts_bloc.dart';
 
 class PostDetailScreen extends StatelessWidget {
@@ -45,7 +44,7 @@ class PostDetailScreen extends StatelessWidget {
   }
 
   void _onRemoveTap(BuildContext context) {
+    context.read<PostsBloc>().add(RemovePost(post: post));
     Navigator.of(context).pop();
-
   }
 }
