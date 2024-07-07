@@ -2,7 +2,21 @@ part of 'posts_bloc.dart';
 
 enum PostsStatus {
   initial,
+
   loading,
+
+  addingPost,
+  addedPostWithSuccess,
+  errorAddingPost,
+
+  updatingPost,
+  updatedPostWithSuccess,
+  errorUpdatingPost,
+
+  removingPost,
+  removedPostWithSuccess,
+  errorRemovingPost,
+
   success,
   error,
 }

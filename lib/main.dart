@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tp_firebase_flutter/add_post_screen/add_post_screen.dart';
 import 'package:tp_firebase_flutter/post_detail_screen/post_detail_screen.dart';
 import 'package:tp_firebase_flutter/posts_bloc/posts_bloc.dart';
 import 'package:tp_firebase_flutter/posts_screen.dart';
@@ -30,6 +31,7 @@ class MyApp extends StatelessWidget {
           home: const PostsScreen(),
           routes: {
             JspScreen.routeName: (context) => const JspScreen(),
+            AddPostScreen.routeName: (context) => const AddPostScreen(),
           },
           onGenerateRoute: (settings) {
             Widget content = const SizedBox();
