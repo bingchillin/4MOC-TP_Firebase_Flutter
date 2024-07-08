@@ -13,6 +13,12 @@ class AddPost extends PostsEvent {
   const AddPost({required this.post});
 }
 
+class UpdatePost extends PostsEvent {
+  final Post post;
+
+  const UpdatePost({required this.post});
+}
+
 class RemovePost extends PostsEvent {
   final Post post;
 

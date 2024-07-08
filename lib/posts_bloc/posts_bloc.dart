@@ -11,6 +11,7 @@ class PostsBloc extends Bloc<PostsEvent, PostsState> {
   PostsBloc() : super(const PostsState()) {
     on<GetAllPosts>(_onGetAllPosts);
     on<AddPost>(_onAddPost);
+    on<UpdatePost>(_onUpdatePost);
     on<RemovePost>(_onRemovePost);
   }
 
@@ -48,12 +49,27 @@ class PostsBloc extends Bloc<PostsEvent, PostsState> {
       ));
     }
   }
-/*
-  void _onRemovePost(RemovePost event, Emitter<PostsState> emit) {
-    emit(PostDeleting());
-    final List<Post> updatedPosts = List.from(state.posts)..remove(event.post);
-    emit(PostsLoaded(updatedPosts));
-  }*/
+
+  void _onUpdatePost(UpdatePost event, Emitter<PostsState> emit) async {
+    emit(state.copyWith(status: PostsStatus.updatingPost));
+    final post = event.post;
+    await Future.delayed(const Duration(seconds: 1));
+
+    try {
+      final updatedPosts = state.posts.map((p) {
+        return p.id == post.id ? post : p;
+      }).toList();
+      emit(state.copyWith(
+        status: PostsStatus.updatedPostWithSuccess,
+        posts: updatedPosts,
+      ));
+    } on AppException catch (e) {
+      emit(state.copyWith(
+        status: PostsStatus.errorUpdatingPost,
+        error: e,
+      ));
+    }
+  }
 
   void _onRemovePost(RemovePost event, Emitter<PostsState> emit) async {
     emit(state.copyWith(status: PostsStatus.removingPost));
