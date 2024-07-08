@@ -5,12 +5,19 @@ import 'package:tp_firebase_flutter/post_detail_screen/post_detail_screen.dart';
 import 'package:tp_firebase_flutter/posts_bloc/posts_bloc.dart';
 import 'package:tp_firebase_flutter/posts_screen.dart';
 
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+
 import 'jsp_bloc/jsp_bloc.dart';
 import 'jsp_screen/jsp_screen.dart';
 import 'models/post.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
