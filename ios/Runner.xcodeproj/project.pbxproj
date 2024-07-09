@@ -198,7 +198,7 @@
 				9705A1C41CF9048500538489 /* Embed Frameworks */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
 				FA9FB493BD6073AFEC5B016A /* [CP] Embed Pods Frameworks */,
-				24BDB601C7F07AE30D4808B7 /* FlutterFire: "flutterfire upload-crashlytics-symbols" */,
+				28B58F345C943F617C1357F4 /* FlutterFire: "flutterfire upload-crashlytics-symbols" */,
 			);
 			buildRules = (
 			);
@@ -270,7 +270,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		24BDB601C7F07AE30D4808B7 /* FlutterFire: "flutterfire upload-crashlytics-symbols" */ = {
+		28B58F345C943F617C1357F4 /* FlutterFire: "flutterfire upload-crashlytics-symbols" */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
