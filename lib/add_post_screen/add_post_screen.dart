@@ -62,6 +62,10 @@ class _AddPostScreenState extends State<AddPostScreen> {
                 onPressed: _onSubmit,
                 child: const Text('Add post'),
               ),
+              TextButton(
+                onPressed: () => throw Exception(),
+                child: const Text("Throw Test Exception"),
+              ),
             ],
           ),
         ),
