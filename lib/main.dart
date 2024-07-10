@@ -9,6 +9,8 @@ import 'package:tp_firebase_flutter/posts_bloc/posts_bloc.dart';
 import 'package:tp_firebase_flutter/posts_screen.dart';
 
 import 'package:firebase_core/firebase_core.dart';
+import 'app_repository/app_repository.dart';
+import 'app_repository/remote_data_source/firestore_data_source.dart';
 import 'firebase_options.dart';
 
 import 'models/post.dart';
@@ -32,33 +34,40 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: (context) => PostsBloc(),
-          ),
-        ],
-        child: MaterialApp(
-          home: const PostsScreen(),
-          routes: {
-            AddPostScreen.routeName: (context) => const AddPostScreen(),
-          },
-          onGenerateRoute: (settings) {
-            Widget content = const SizedBox();
-
-            switch(settings.name) {
-              case PostDetailScreen.routeName:
-                final arguments = settings.arguments;
-                if(arguments is Post) {
-                  content = PostDetailScreen(post: arguments);
-                }
-                break;
-            }
-
-            return MaterialPageRoute(
-              builder: (context) => content,
-            );
-          },
-        ));
+    return RepositoryProvider(
+      create: (context) => AppRepository(
+        remoteDataSource: FirestoreDataSource(),
+      ),
+      child: MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) => PostsBloc(
+                appRepository: context.read<AppRepository>(),
+              ),
+            ),
+          ],
+          child: MaterialApp(
+            home: const PostsScreen(),
+            routes: {
+              AddPostScreen.routeName: (context) => const AddPostScreen(),
+            },
+            onGenerateRoute: (settings) {
+              Widget content = const SizedBox();
+      
+              switch(settings.name) {
+                case PostDetailScreen.routeName:
+                  final arguments = settings.arguments;
+                  if(arguments is Post) {
+                    content = PostDetailScreen(post: arguments);
+                  }
+                  break;
+              }
+      
+              return MaterialPageRoute(
+                builder: (context) => content,
+              );
+            },
+          )),
+    );
   }
 }

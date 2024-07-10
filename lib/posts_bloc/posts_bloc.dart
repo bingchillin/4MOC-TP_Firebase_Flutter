@@ -1,16 +1,18 @@
 import 'package:tp_firebase_flutter/models/app_exception.dart';
 import 'package:tp_firebase_flutter/models/post.dart';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
+
+import '../app_repository/app_repository.dart';
 
 part 'posts_event.dart';
 part 'posts_state.dart';
 
 class PostsBloc extends Bloc<PostsEvent, PostsState> {
-  PostsBloc() : super(const PostsState()) {
+  final AppRepository appRepository;
+
+  PostsBloc({ required this.appRepository }) : super(const PostsState()) {
     on<GetAllPosts>(_onGetAllPosts);
     on<AddPost>(_onAddPost);
     on<UpdatePost>(_onUpdatePost);
@@ -21,7 +23,7 @@ class PostsBloc extends Bloc<PostsEvent, PostsState> {
     emit(state.copyWith(status: PostsStatus.loading));
 
     try {
-      final posts = await _getAllPosts();
+      final posts = await appRepository.getAllPosts();
       emit(state.copyWith(
         status: PostsStatus.success,
         posts: posts,
@@ -38,7 +40,7 @@ class PostsBloc extends Bloc<PostsEvent, PostsState> {
     emit(state.copyWith(status: PostsStatus.addingPost));
 
     try {
-      Post newPostWithId = await _addPost(event.post);
+      Post newPostWithId = await appRepository.addPost(event.post);
       final updatedPosts = List<Post>.from(state.posts)..add(newPostWithId);
 
       emit(state.copyWith(
@@ -57,7 +59,7 @@ class PostsBloc extends Bloc<PostsEvent, PostsState> {
     emit(state.copyWith(status: PostsStatus.updatingPost));
 
     try {
-      await _updatePost(event.post);
+      await appRepository.updatePost(event.post);
 
       final updatedPost = state.posts.map((p) {
         return p.id == event.post.id ? event.post : p;
@@ -79,7 +81,7 @@ class PostsBloc extends Bloc<PostsEvent, PostsState> {
     emit(state.copyWith(status: PostsStatus.removingPost));
 
     try {
-      await _removePost(event.post);
+      await appRepository.removePost(event.post);
 
       emit(state.copyWith(
         status: PostsStatus.removedPostWithSuccess,
@@ -90,53 +92,6 @@ class PostsBloc extends Bloc<PostsEvent, PostsState> {
         status: PostsStatus.errorRemovingPost,
         error: e,
       ));
-    }
-  }
-
-  Future<List<Post>> _getAllPosts() async {
-    try {
-      final querySnapshot = await FirebaseFirestore.instance.collection('posts').get();
-      final posts = querySnapshot.docs.map((doc) {
-        return Post(
-          id: doc.id,
-          title: doc.data()['title'] as String,
-          description: doc.data()['description'] as String,
-        );
-      }).toList();
-      return posts;
-    } catch (e) {
-      throw Exception('Error fetching posts : $e');
-    }
-  }
-
-  Future<Post> _addPost(Post post) async {
-    try {
-      DocumentReference docRef = await FirebaseFirestore.instance.collection('posts').add({
-        'title': post.title,
-        'description': post.description,
-      });
-      return Post(id: docRef.id, title: post.title, description: post.description);
-    } catch (e) {
-      throw Exception( 'Failed to add post: $e');
-    }
-  }
-
-  Future<void> _updatePost(Post post) async {
-    try {
-      await FirebaseFirestore.instance.collection('posts').doc(post.id).update({
-        'title': post.title,
-        'description': post.description,
-      });
-    } catch (e) {
-      throw Exception('Failed to update post: $e');
-    }
-  }
-
-  Future<void> _removePost(Post post) async {
-    try {
-      await FirebaseFirestore.instance.collection('posts').doc(post.id).delete();
-    } catch (e) {
-      throw Exception('Failed to remove post: $e');
     }
   }
 }
