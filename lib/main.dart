@@ -11,8 +11,6 @@ import 'package:tp_firebase_flutter/posts_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
-import 'jsp_bloc/jsp_bloc.dart';
-import 'jsp_screen/jsp_screen.dart';
 import 'models/post.dart';
 
 void main() async {
@@ -26,7 +24,7 @@ void main() async {
     FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
     return true;
   };
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -39,14 +37,10 @@ class MyApp extends StatelessWidget {
           BlocProvider(
             create: (context) => PostsBloc(),
           ),
-          BlocProvider(
-            create: (context) => JspBloc(),
-          ),
         ],
         child: MaterialApp(
           home: const PostsScreen(),
           routes: {
-            JspScreen.routeName: (context) => const JspScreen(),
             AddPostScreen.routeName: (context) => const AddPostScreen(),
           },
           onGenerateRoute: (settings) {
