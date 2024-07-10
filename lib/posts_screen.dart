@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tp_firebase_flutter/add_post_screen/add_post_screen.dart';
 
-import 'package:tp_firebase_flutter/jsp_bloc/jsp_bloc.dart';
 import 'package:tp_firebase_flutter/posts_bloc/posts_bloc.dart';
 import 'package:tp_firebase_flutter/post_detail_screen/post_detail_screen.dart';
 
 import '../models/post.dart';
-import 'jsp_screen/jsp_screen.dart';
 
 class PostsScreen extends StatefulWidget {
   const PostsScreen({super.key});

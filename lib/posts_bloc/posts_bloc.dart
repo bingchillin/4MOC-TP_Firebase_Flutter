@@ -1,6 +1,8 @@
 import 'package:tp_firebase_flutter/models/app_exception.dart';
 import 'package:tp_firebase_flutter/models/post.dart';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 
@@ -24,23 +26,24 @@ class PostsBloc extends Bloc<PostsEvent, PostsState> {
         status: PostsStatus.success,
         posts: posts,
       ));
-    } catch (error) {
+    } on AppException catch (e) {
       emit(state.copyWith(
         status: PostsStatus.error,
-        error: UnknownException(),
+        error: e,
       ));
     }
   }
 
   void _onAddPost(AddPost event, Emitter<PostsState> emit) async {
     emit(state.copyWith(status: PostsStatus.addingPost));
-    final post = event.post;
-    await Future.delayed(const Duration(seconds: 1));
 
     try {
+      Post newPostWithId = await _addPost(event.post);
+      final updatedPosts = List<Post>.from(state.posts)..add(newPostWithId);
+
       emit(state.copyWith(
         status: PostsStatus.addedPostWithSuccess,
-        posts: [...state.posts, post],
+        posts: updatedPosts,
       ));
     } on AppException catch (e) {
       emit(state.copyWith(
@@ -52,16 +55,17 @@ class PostsBloc extends Bloc<PostsEvent, PostsState> {
 
   void _onUpdatePost(UpdatePost event, Emitter<PostsState> emit) async {
     emit(state.copyWith(status: PostsStatus.updatingPost));
-    final post = event.post;
-    await Future.delayed(const Duration(seconds: 1));
 
     try {
-      final updatedPosts = state.posts.map((p) {
-        return p.id == post.id ? post : p;
+      await _updatePost(event.post);
+
+      final updatedPost = state.posts.map((p) {
+        return p.id == event.post.id ? event.post : p;
       }).toList();
+
       emit(state.copyWith(
         status: PostsStatus.updatedPostWithSuccess,
-        posts: updatedPosts,
+        posts: updatedPost,
       ));
     } on AppException catch (e) {
       emit(state.copyWith(
@@ -73,13 +77,13 @@ class PostsBloc extends Bloc<PostsEvent, PostsState> {
 
   void _onRemovePost(RemovePost event, Emitter<PostsState> emit) async {
     emit(state.copyWith(status: PostsStatus.removingPost));
-    final post = event.post;
-    await Future.delayed(const Duration(seconds: 1));
 
     try {
+      await _removePost(event.post);
+
       emit(state.copyWith(
         status: PostsStatus.removedPostWithSuccess,
-        posts: List.from(state.posts)..remove(post),
+        posts: List.from(state.posts)..removeWhere((p) => p.id == event.post.id),
       ));
     } on AppException catch (e) {
       emit(state.copyWith(
@@ -90,13 +94,49 @@ class PostsBloc extends Bloc<PostsEvent, PostsState> {
   }
 
   Future<List<Post>> _getAllPosts() async {
-    await Future.delayed(const Duration(seconds: 1));
-    return List.generate(10, (index) {
-      return Post(
-        id: index,
-        title: 'Post $index',
-        description: 'This is the description of post $index',
-      );
-    });
+    try {
+      final querySnapshot = await FirebaseFirestore.instance.collection('posts').get();
+      final posts = querySnapshot.docs.map((doc) {
+        return Post(
+          id: doc.id,
+          title: doc.data()['title'] as String,
+          description: doc.data()['description'] as String,
+        );
+      }).toList();
+      return posts;
+    } catch (e) {
+      throw Exception('Error fetching posts : $e');
+    }
+  }
+
+  Future<Post> _addPost(Post post) async {
+    try {
+      DocumentReference docRef = await FirebaseFirestore.instance.collection('posts').add({
+        'title': post.title,
+        'description': post.description,
+      });
+      return Post(id: docRef.id, title: post.title, description: post.description);
+    } catch (e) {
+      throw Exception( 'Failed to add post: $e');
+    }
+  }
+
+  Future<void> _updatePost(Post post) async {
+    try {
+      await FirebaseFirestore.instance.collection('posts').doc(post.id).update({
+        'title': post.title,
+        'description': post.description,
+      });
+    } catch (e) {
+      throw Exception('Failed to update post: $e');
+    }
+  }
+
+  Future<void> _removePost(Post post) async {
+    try {
+      await FirebaseFirestore.instance.collection('posts').doc(post.id).delete();
+    } catch (e) {
+      throw Exception('Failed to remove post: $e');
+    }
   }
 }

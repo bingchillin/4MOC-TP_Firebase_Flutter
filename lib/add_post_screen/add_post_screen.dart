@@ -76,7 +76,6 @@ class _AddPostScreenState extends State<AddPostScreen> {
   void _onSubmit() {
     if (_formKey.currentState!.validate()) {
       final post = Post(
-        id: DateTime.now().millisecondsSinceEpoch,
         title: _titleController.text,
         description: _descriptionController.text,
       );
